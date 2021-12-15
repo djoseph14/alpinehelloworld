@@ -6,7 +6,7 @@ pipeline {
         STAGING = "daniel-ajc-staging-env"
         PRODUCTION = "daniel-ajc-prod-env"
         USERNAME = "lianhuahayu"
-        CONTAINER_NAME = IMAGE_NAME
+        CONTAINER_NAME = "alpinehelloworld"
     }
 
     agent none 
