@@ -98,7 +98,7 @@ pipeline {
                 HEROKU_API_KEY = credentials('tokenHeroku')
             }
             steps {
-                script{
+                script {
                     sh '''
                         heroku container:login
                         heroku create $PRODUCTION || echo "project already exist"
@@ -115,17 +115,14 @@ pipeline {
         }
         agent any
         steps{
-            withCredentials([file(credentialsId: "ec2_prod_private_key", keyFileVariable: 'keyfile')]) {
+            withCredentials([sshUserPrivateKey(credentialsId: "ec2_prod_private_key", keyFileVariable: 'keyfile', usernameVariable: 'ubuntu')]) {
                 catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                    script{ 
-                        
+                    script { 
                         timeout(time: 15, unit: "MINUTES") {
                             input message: 'Do you want to approve the deploy in production?', ok: 'Yes'
                             }
-
-                        sh'''
-                            ssh -i ${keyfile} ubuntu@${EC2_PRODUCTION_HOST}
-                            docker run --name $CONTAINER_NAME -d -e PORT=5000 -p 5000:5000 $USERNAME/$IMAGE_NAME:$IMAGE_TAG
+                        sh '''
+                        ssh -o StrictHostKeyChecking=no -i ${keyfile} ${ubuntu}@${EC2_PRODUCTION_HOST} docker run --name $CONTAINER_NAME -d -e PORT=5000 -p 5000:5000 $USERNAME/$IMAGE_NAME:$IMAGE_TAG
                         '''
                         }
                     }
