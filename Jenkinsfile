@@ -115,7 +115,7 @@ pipeline {
         }
         agent any
         steps{
-            withCredentials([sshUserPrivateKey(credentialsId: "ec2_prod_private_key", keyFileVariable: 'keyfile')]) {
+            withCredentials([file(credentialsId: "ec2_prod_private_key", keyFileVariable: 'keyfile')]) {
                 catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
                     script{ 
                         
