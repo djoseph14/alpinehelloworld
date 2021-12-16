@@ -110,10 +110,10 @@ pipeline {
         }
 
         stage('Deploy app on EC2-cloud Production') {
-        agent any
         when{
             expression { GIT_BRANCH == 'origin/master' }
         }
+        agent any
         steps{
             withCredentials([sshUserPrivateKey(credentialsId: "ec2_prod_private_key", keyFileVariable: 'keyfile', usernameVariable: 'NUSER')]) {
                 catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
